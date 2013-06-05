@@ -6,8 +6,25 @@ dialogModule.controller('MessageBoxController', ['$scope', 'dialog', 'model', fu
   $scope.title = model.title;
   $scope.message = model.message;
   $scope.buttons = model.buttons;
-  $scope.close = function(res){
+  $scope.close = function(res) {
     dialog.close(res);
+  };
+}]);
+
+dialogModule.controller('PromptController', ['$scope', 'dialog', 'model', function($scope, dialog, model){
+  $scope.title = model.title;
+  $scope.message = model.message;
+  $scope.buttons = model.buttons;
+  $scope.inputType = model.inputType || 'text';
+  $scope.value = '';
+  $scope.close = function(buttonResult, value){
+    $scope.errorMessage = model.validate(buttonResult, value || '');
+    if (!$scope.errorMessage) {
+      dialog.close({ 
+        buttonResult: buttonResult, 
+        value: value 
+      });
+    }
   };
 }]);
 
@@ -284,6 +301,41 @@ dialogModule.provider("$dialog", function(){
             };
           }
         }});
+      },
+
+      // creates a new `Dialog` tied to the default prompt box template and controller.
+      //
+      // `model` is an object with the following properties:
+      //
+      // `title` and `message` are rendered in the modal header and body sections respectively.
+      // The `buttons` array holds an object with the following members for each button to include in the
+      // modal footer section:
+      //
+      // * `result`: the result to pass to the `close` method of the dialog when the button is clicked
+      // * `label`: the label of the button
+      // * `cssClass`: additional css class(es) to apply to the button for styling
+      //
+      // `inputType` is the type applied to input element (e.g. 'text', 'phone', 'url', ...)
+      // `validate` is a function used to validate input value before closing the dialog. it must return
+      //  an empty string when value is valid, and an error message when value is invalid
+      prompt: function(model) {
+
+        // VOY por aquí. Tengo que crear el controller y la plantilla.
+        return new Dialog({
+          templateUrl: 'template/dialog/prompt.html',
+          controller: 'PromptController',
+          resolve: {
+            model: function() {
+              return {
+                title: model.title,
+                message: model.message,
+                inputType: model.inputType,
+                validate: model.validate,
+                buttons: model.buttons
+              };
+            }
+          }
+        });
       }
     };
   }];

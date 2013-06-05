@@ -202,6 +202,8 @@ dialogModule.provider("$dialog", function(){
     };
 
     Dialog.prototype._addElementsToDom = function(){
+      if (this._open) { return; }
+
       body.append(this.modalEl);
 
       if(this.options.backdrop) { 
@@ -215,6 +217,8 @@ dialogModule.provider("$dialog", function(){
     };
 
     Dialog.prototype._removeElementsFromDom = function(){
+      if (!this._open) { return; }
+
       this.modalEl.remove();
 
       if(this.options.backdrop) { 

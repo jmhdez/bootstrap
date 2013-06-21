@@ -17,6 +17,7 @@ dialogModule.controller('PromptController', ['$scope', 'dialog', 'model', functi
   $scope.buttons = model.buttons;
   $scope.inputType = model.inputType || 'text';
   $scope.value = '';
+  $scope.step = model.step || 1;
   $scope.close = function(buttonResult, value){
     $scope.errorMessage = model.validate(buttonResult, value || '');
     if (!$scope.errorMessage) {
@@ -316,6 +317,7 @@ dialogModule.provider("$dialog", function(){
       // * `cssClass`: additional css class(es) to apply to the button for styling
       //
       // `inputType` is the type applied to input element (e.g. 'text', 'phone', 'url', ...)
+      // `step` is the step value applied to input['number'] elements 
       // `validate` is a function used to validate input value before closing the dialog. it must return
       //  an empty string when value is valid, and an error message when value is invalid
       prompt: function(model) {
@@ -326,13 +328,7 @@ dialogModule.provider("$dialog", function(){
           controller: 'PromptController',
           resolve: {
             model: function() {
-              return {
-                title: model.title,
-                message: model.message,
-                inputType: model.inputType,
-                validate: model.validate,
-                buttons: model.buttons
-              };
+              return model;
             }
           }
         });

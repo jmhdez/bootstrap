@@ -5,5 +5,7 @@
 	<p>{{ message }}</p>
 </div>
 <div class="modal-footer">
-	<button ng-repeat="btn in buttons" ng-click="close(btn.result)" class="btn" ng-class="btn.cssClass">{{ btn.label }}</button>
+	<button ng-repeat="btn in buttons" ng-click="close(btn.result)" class="btn" ng-class="btn.cssClass">
+		<img ng-show="btn.img" ng-src="{{btn.img}}"></img>{{ btn.label }}
+	</button>
 </div>

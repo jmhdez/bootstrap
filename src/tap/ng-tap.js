@@ -31,8 +31,6 @@ angular.module('ui.bootstrap.tap', [])
 					// Extraigo el evento original del evento que me manda jQuery
 					var event = e.originalEvent;
 
-					console.log("onTouchStart");
-
 					// Si hay más de un dedo a la vez, no hago nada
 					if (event.targetTouches.length > 1) {
 						return;
@@ -42,22 +40,15 @@ angular.module('ui.bootstrap.tap', [])
 					touchStartX = event.targetTouches[0].pageX;
 					touchStartY = event.targetTouches[0].pageY;
 
-					console.log("Start: X, Y " + touchStartX + ", " + touchStartY);
-
 				});
 
 				element.bind('touchcancel', function(e) {
-
-					console.log("ontouchcancel");
-
 					tapping = false;
 					touchStartX = 0;
 					touchStartY = 0;
 				});
 
 				element.bind('touchend', function(e) {
-
-					console.log("ontouchend");
 
 					if (!tapping) {
 						return;
@@ -66,8 +57,6 @@ angular.module('ui.bootstrap.tap', [])
 					var touch = e.originalEvent.changedTouches[0],
 						touchEndX = touch.pageX,
 						touchEndY = touch.pageY;
-
-					console.log("End: X, Y " + touchEndX + ", " + touchEndY);
 
 					if (Math.abs(touchEndX - touchStartX) > touchBoundary || Math.abs(touchEndY - touchStartY) > touchBoundary) {
 						return;

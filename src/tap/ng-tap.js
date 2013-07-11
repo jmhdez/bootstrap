@@ -21,19 +21,62 @@ angular.module('ui.bootstrap.tap', [])
 
 			} else {
 
+				var touchBoundary = 15;
 				var tapping = false;
+				var touchStartX = 0;
+				var touchStartY = 0;
 
 				element.bind('touchstart', function(e) {
-					tapping = true;
-				});
-				element.bind('touchmove', function(e) {
-					tapping = false;
-				});
-				element.bind('touchend', function(e) {
-					if (tapping) {
-						scope.$apply(attrs['ngTap'], element);
+
+					// Extraigo el evento original del evento que me manda jQuery
+					var event = e.originalEvent;
+
+					console.log("onTouchStart");
+
+					// Si hay más de un dedo a la vez, no hago nada
+					if (event.targetTouches.length > 1) {
+						return;
 					}
+
+					tapping = true;
+					touchStartX = event.targetTouches[0].pageX;
+					touchStartY = event.targetTouches[0].pageY;
+
+					console.log("Start: X, Y " + touchStartX + ", " + touchStartY);
+
 				});
+
+				element.bind('touchcancel', function(e) {
+
+					console.log("ontouchcancel");
+
+					tapping = false;
+					touchStartX = 0;
+					touchStartY = 0;
+				});
+
+				element.bind('touchend', function(e) {
+
+					console.log("ontouchend");
+
+					if (!tapping) {
+						return;
+					}
+
+					var touch = e.originalEvent.changedTouches[0],
+						touchEndX = touch.pageX,
+						touchEndY = touch.pageY;
+
+					console.log("End: X, Y " + touchEndX + ", " + touchEndY);
+
+					if (Math.abs(touchEndX - touchStartX) > touchBoundary || Math.abs(touchEndY - touchStartY) > touchBoundary) {
+						return;
+					}
+
+					scope.$apply(attrs['ngTap'], element);
+					
+				});
+
 			}
 		};
 	}
